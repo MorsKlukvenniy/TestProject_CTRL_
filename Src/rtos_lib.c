@@ -72,7 +72,7 @@ int rtos_queue_send(int queue, const void* data, long long timeToWait)
 	if (queue <= queues_count)
 	{
 #ifdef FREERTOS_BUILD
-		if (xQueueSend(queues_id[queue], data, timeToWait == 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
+		if (xQueueSend(queues_id[queue], data, timeToWait < 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
 			return 1;
 #else
 	//!Different functions
@@ -89,7 +89,7 @@ int rtos_queue_receive(int queue, void *data, long long timeToWait)
 	if (queue <= queues_count)
 	{
 #ifdef FREERTOS_BUILD
-		if (xQueueReceive(queues_id[queue], data, timeToWait == 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
+		if (xQueueReceive(queues_id[queue], data, timeToWait < 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
 			return 1;
 #else
 	//!Different functions
@@ -152,7 +152,7 @@ int rtos_semaphore_take(int semaphore, long long time)
 	if (semaphore < sem_count)
 	{
 #ifdef FREERTOS_BUILD
-		if (xSemaphoreTake(sem_id[semaphore], timeToWait == 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
+		if (xSemaphoreTake(sem_id[semaphore], timeToWait < 0 ? portMAX_DELAY : portTICK_PERIOD_MS(timeToWait)) == pdTRUE)
 			return 1;
 #else
 	//!Different functions

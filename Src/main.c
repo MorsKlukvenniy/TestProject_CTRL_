@@ -44,7 +44,7 @@ int uartThread, COMMANDThread;
 int uartRxQueue, uartTxQueue, messageQueue;
 int dataSemaphore; //!Для контроля доступа к массиву температур на чтение для отправки и запись по таймеру
 
-//!Перчесиление команд
+//!Перчисление команд
 enum
 {
 	NO_COMMAND,
@@ -103,16 +103,16 @@ static void UART_Thread()
 	while (1)
 	{
 		//! Использую очередь как евент(флаг), значение буфера не имеет значения
-		if (rtos_queue_receive(messageQueue, &buff, 0))
+		if (rtos_queue_receive(messageQueue, &buff, -1))
 		{
-			if (rtos_semaphore_take(dataSemaphore, 0))
+			if (rtos_semaphore_take(dataSemaphore, -1))
 			{
 				if (messType == MESS_BYTE)
 				{
 					int i = 0;
 					for (i = 0; i < 256; i++)
 					{
-						rtos_queue_send(uartTxQueue, &temperatures[i], 0);
+						rtos_queue_send(uartTxQueue, &temperatures[i], -1);
 					}
 				}
 				else
@@ -139,7 +139,7 @@ static void UART_Thread()
 						int j = 0;
 						for (j = 0; j < 4; j++)
 						{
-							rtos_queue_send(uartTxQueue, &t[i], 0);
+							rtos_queue_send(uartTxQueue, &t[i], -1);
 						}
 					}
 				}
@@ -157,7 +157,7 @@ static void COMMAND_Thread()
 	uint8_t command_counter = 0;
 	while (1)
 	{
-		if (rtos_queue_receive(uartRxQueue, &buff, 0))
+		if (rtos_queue_receive(uartRxQueue, &buff, -1))
 		{
 			//!Чтобы прочитать команды, надо накопить входные символы
 			switch (command_status)
@@ -198,7 +198,7 @@ static void COMMAND_Thread()
 						command_counter = 0;
 						command_status = NO_COMMAND;
 						//! Использую очередь как евент(флаг), значение буфера не имеет значения
-						rtos_queue_send(messageQueue, &buff, 0);
+						rtos_queue_send(messageQueue, &buff, -1);
 					}
 					else if (COMMANDs[READ_COMMAND][command_counter] == (char)buff)
 					{
@@ -220,7 +220,7 @@ static void COMMAND_Thread()
 //! Обработчик прерывания таймера. Поулчаем значения температур от датчиков
 static void timerCallback()
 {
-	if (rtos_semaphore_take(dataSemaphore, 0))
+	if (rtos_semaphore_take(dataSemaphore, -1))
 	{
 		int i = 0;
 		for (i = 0; i < 256; i ++)
