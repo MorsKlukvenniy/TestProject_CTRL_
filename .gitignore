@@ -1,0 +1,14 @@
+*.txt
+*.html
+*.chm
+*.log
+*.o
+*.d
+*.elf
+*.su
+*.ld
+*.list
+*.mk
+*.map
+*.xml
+*/Debug/*
