@@ -11,4 +11,5 @@
 *.mk
 *.map
 *.xml
+*.bin
 */Debug/*

@@ -124,7 +124,7 @@ void rtos_timer_start(int timer, long long time)
 	if (timer <= timers_count)
 	{
 #ifdef FREERTOS_BUILD
-	osTimerStart(timers_id[timer], time);
+	osTimerStart(timers_id[timer], portTICK_PERIOD_MS(time));
 #else
 	//!Different functions
 #endif

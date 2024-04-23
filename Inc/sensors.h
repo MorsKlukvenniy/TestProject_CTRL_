@@ -9,6 +9,6 @@
 #define SENSORS_H_
 
 #include <stdint.h>
-uint8_t get_temperature(int index);
+int8_t get_temperature(int index);
 
 #endif /* SENSORS_H_ */

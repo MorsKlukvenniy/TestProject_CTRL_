@@ -171,6 +171,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	uart_RxCallBack_func();
 }
 
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	uart_TxCallBack_func();
+}
+
 #else
 	//!Different init functions
 #endif

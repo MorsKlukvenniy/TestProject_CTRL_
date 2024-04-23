@@ -3,6 +3,8 @@
  *
  *  Created on: Apr 23, 2024
  *      Author: Yury
+ *
+ *      Библиотека интерфейс RTOS для переносимости кода между разными RTOS
  */
 
 #ifndef RTOS_LIB_H_
