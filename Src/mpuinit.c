@@ -12,11 +12,14 @@ static void(*uart_RxCallBack_func)(void);
 static void(*uart_TxCallBack_func)(void);
 
 #ifdef STM32_BUILD
+#include "stm32f7xx_hal.h"
+#include "stm32f723e_discovery.h"
+
 static void MPU_Config(void);
 static void SystemClock_Config(void);
 static void CPU_CACHE_Enable(void);
 
-UART_HandleTypeDef *UartHandle;
+UART_HandleTypeDef UartHandle;
 uint8_t *UARTTx;
 uint8_t *UARTRx;
 #else
@@ -52,22 +55,24 @@ void mpu_init()
 #endif
 }
 
-void uart_init(void (*uart_RxCallBack)(void), void (*uart_TxCallBack)(void), volatile uint8_t *Rx, volatile uint8_t *Tx)
+void uart_init(void (*uart_RxCallBack)(void), void (*uart_TxCallBack)(void), uint8_t *Rx, uint8_t *Tx)
 {
 
 #ifdef STM32_BUILD
-	  UartHandle.Instance				= UAR4;
+	  UartHandle.Instance				= UART4;
 	  UartHandle.Init.BaudRate			= 115200;
-	  UartHandle.Init.CLKLastBit		= UART_LASTBIT_DISABLE;
-	  UartHandle.Init.CLKPhase 			= UART_PHASE_1EDGE;
-	  UartHandle.Init.CLKPolarity 		= UART_POLARITY_HIGH;
 	  UartHandle.Init.Mode 				= UART_MODE_TX_RX;
 	  UartHandle.Init.Parity 			= UART_PARITY_NONE;
 	  UartHandle.Init.StopBits 			= UART_STOPBITS_1;
 	  UartHandle.Init.WordLength 		= UART_WORDLENGTH_8B;
 	  UARTTx = Tx;
 	  UARTRx = Rx;
-	  if(HAL_USART_TransmitReceive_IT(&UsartHandle, UARTTx, UARTRx, sizeof(uint8_t)) != HAL_OK)
+
+	  if(HAL_UART_Transmit_IT(&UartHandle, UARTTx, sizeof(uint8_t)) != HAL_OK)
+	  {
+		  exit(1);
+	  }
+	  if(HAL_UART_Receive_IT(&UartHandle, UARTRx, sizeof(uint8_t)) != HAL_OK)
 	  {
 		  exit(1);
 	  }

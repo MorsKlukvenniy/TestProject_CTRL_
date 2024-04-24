@@ -16,21 +16,18 @@
   ******************************************************************************
   */
 
-#define STM32_BUILD
-#define FREERTOS_BUILD
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "mpuinit.h"
 #include "rtos_lib.h"
 #include "sensors.h"
-#include "cmsis_os.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-volatile uint8_t UARTTx;
-volatile uint8_t UARTRx;
+uint8_t UARTTx_buff;
+uint8_t UARTRx_buff;
 static uint8_t messType = 0;
 static int8_t temperatures[256];
 /* Private function prototypes -----------------------------------------------*/
@@ -42,7 +39,7 @@ static void COMMAND_Thread();
 int sensorsTimer;
 int uartThread, COMMANDThread;
 int uartRxQueue, uartTxQueue, messageQueue;
-int dataSemaphore; //!Для контроля доступа к массиву температур на чтение для отправки и запись по таймеру
+int dataSemaphore; //!Для контроля доступа к массиву температур на чтение (для отправки) и запись (по таймеру)
 
 //!Перчисление команд
 enum
@@ -74,7 +71,7 @@ int main(void)
 	//!All init
 	mpu_init();
 	//!Uart init
-	uart_init(UART_RxCallback, UART_TxCallback, &UARTRx, &UARTTx);
+	uart_init(UART_RxCallback, UART_TxCallback, &UARTRx_buff, &UARTTx_buff);
 
 	//!Timer init
 	sensorsTimer = rtos_timer_init(1, timerCallback);
@@ -234,7 +231,7 @@ static void timerCallback()
 //! Обработчик прерывания UART. Получаем команды
 static void UART_RxCallback()
 {
-	uint8_t buff = UARTRx;
+	uint8_t buff = UARTRx_buff;
 	rtos_queue_send(uartRxQueue, &buff, 1);
 }
 
@@ -244,6 +241,6 @@ static void UART_TxCallback()
 	uint8_t buff = 0;
 	if (rtos_queue_receive(uartTxQueue, &buff, 1))
 	{
-		UARTTx = buff;
+		UARTTx_buff = buff;
 	}
 }

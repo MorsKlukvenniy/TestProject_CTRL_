@@ -17,13 +17,13 @@
 
 void rtos_start(void);
 
-int rtos_thread_init(void(*thread_func)(void), int priority, int stackSize);
+int rtos_thread_init(void(*thread_func)(const void*), int priority, int stackSize);
 
 int rtos_queue_init(int queueLength, int itemSize);
 int rtos_queue_send(int queue, const void* data, long long timeToWait);
 int rtos_queue_receive(int queue, void *data, long long timeToWait);
 
-int rtos_timer_init(int periodic, void(*timerCallBack_func)(void));
+int rtos_timer_init(int periodic, void(*timerCallBack_func)(const void*));
 void rtos_timer_start(int timer, long long time);
 
 int rtos_semaphore_init();

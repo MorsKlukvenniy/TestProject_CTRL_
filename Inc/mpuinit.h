@@ -10,6 +10,6 @@
 
 #include <stdint.h>
 void mpu_init(void);
-void uart_init(void (*uart_RxCallBack)(void), void (*uart_TxCallBack)(void), volatile uint8_t *Rx, volatile uint8_t *Tx);
+void uart_init(void (*uart_RxCallBack)(void), void (*uart_TxCallBack)(void), uint8_t *Rx, uint8_t *Tx);
 
 #endif /* MPUINIT_H_ */
